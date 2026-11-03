@@ -1,0 +1,70 @@
+version: 2
+
+models:
+  - name: stg_etablissement
+    description: "Référentiel des établissements nettoyé avec code FINESS normalisé (RM2) et département (RM4)."
+    columns:
+      - name: id_organisation
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_professionnel
+    description: "Référentiel des professionnels pseudonymisé (RM5) et rattaché aux établissements (RM1)."
+    columns:
+      - name: id_prof_sante
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_diagnostic
+    description: "Référentiel consolidé des diagnostics CIM-10."
+    columns:
+      - name: code_diagnostic
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_patient
+    description: "Table des patients pseudonymisée et minimisée conformément au RGPD (RM5)."
+    columns:
+      - name: id_patient_source
+        tests:
+          - unique
+          - not_null
+      - name: sexe
+        tests:
+          - accepted_values:
+              values: ['M', 'F', 'Inconnu']
+
+  - name: stg_consultation
+    description: "Consultations nettoyées avec durée et nombre de médicaments prescrits."
+    columns:
+      - name: id_fait_consult
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_hospitalisation
+    description: "Séjours hospitaliers nettoyés et typés."
+    columns:
+      - name: id_fait_hospit
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_satisfaction
+    description: "Résultats e-Satis nettoyés et filtrés (RM3 & RM7)."
+    columns:
+      - name: id_fait_satisfaction
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_deces
+    description: "Actes de décès INSEE nettoyés sans valeurs aberrantes."
+    columns:
+      - name: id_fait_deces
+        tests:
+          - unique
+          - not_null

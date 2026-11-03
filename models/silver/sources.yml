@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: chu_bronze
+    database: big-data-cloud-healthcare-unit
+    schema: chu_bronze
+    tables:
+      - name: etablissement_sante
+      - name: professionnel_sante
+      - name: activite_professionnel_sante
+      - name: hospitalisations
+      - name: esatis_2017
+      - name: deces_insee
+      - name: patient
+      - name: consultation
+      - name: diagnostic
+      - name: prescription
+      - name: professionnel_de_sante
+      - name: specialites
