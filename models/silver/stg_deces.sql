@@ -11,16 +11,23 @@
 WITH deces_brut AS (
     SELECT
         CASE 
-            WHEN UPPER(TRIM(CAST(sexe AS STRING))) IN ('1', 'M', 'H') THEN 'M'
-            WHEN UPPER(TRIM(CAST(sexe AS STRING))) IN ('2', 'F') THEN 'F'
+            WHEN UPPER(REPLACE(TRIM(CAST(sexe AS STRING)), '"', '')) IN ('1', 'M', 'H') THEN 'M'
+            WHEN UPPER(REPLACE(TRIM(CAST(sexe AS STRING)), '"', '')) IN ('2', 'F') THEN 'F'
             ELSE 'Inconnu'
         END AS sexe_decede,
-        SAFE.PARSE_DATE('%Y-%m-%d', SUBSTR(TRIM(CAST(date_naissance AS STRING)), 1, 10)) AS dt_naissance,
-        SAFE.PARSE_DATE('%Y-%m-%d', SUBSTR(TRIM(CAST(date_deces AS STRING)), 1, 10)) AS dt_deces,
-        TRIM(CAST(code_lieu_deces AS STRING)) AS code_commune_insee,
-        TRIM(CAST(numero_acte_deces AS STRING)) AS numero_acte_deces
+        COALESCE(
+            SAFE_CAST(REPLACE(TRIM(CAST(date_naissance AS STRING)), '"', '') AS DATE),
+            SAFE.PARSE_DATE('%Y-%m-%d', CONCAT(SUBSTR(REPLACE(TRIM(CAST(date_naissance AS STRING)), '"', ''), 1, 10), '-01')) ,
+            SAFE.PARSE_DATE('%Y-%m-%d', CONCAT(SUBSTR(REPLACE(TRIM(CAST(date_naissance AS STRING)), '"', ''), 1, 4), '-01-01'))
+        ) AS dt_naissance,
+        COALESCE(
+            SAFE_CAST(REPLACE(TRIM(CAST(date_deces AS STRING)), '"', '') AS DATE),
+            SAFE.PARSE_DATE('%Y-%m-%d', CONCAT(SUBSTR(REPLACE(TRIM(CAST(date_deces AS STRING)), '"', ''), 1, 10), '-01')),
+            SAFE.PARSE_DATE('%Y-%m-%d', CONCAT(SUBSTR(REPLACE(TRIM(CAST(date_deces AS STRING)), '"', ''), 1, 4), '-01-01'))
+        ) AS dt_deces,
+        REPLACE(TRIM(CAST(code_lieu_deces AS STRING)), '"', '') AS code_commune_insee,
+        REPLACE(TRIM(CAST(numero_acte_deces AS STRING)), '"', '') AS numero_acte_deces
     FROM {{ source('chu_bronze', 'deces_insee') }}
-    WHERE date_deces IS NOT NULL
 )
 SELECT
     FARM_FINGERPRINT(CONCAT(COALESCE(code_commune_insee, ''), '_', COALESCE(CAST(dt_deces AS STRING), ''), '_', COALESCE(numero_acte_deces, ''))) AS id_fait_deces,
