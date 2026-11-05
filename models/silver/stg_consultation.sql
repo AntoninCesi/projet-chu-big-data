@@ -1,3 +1,13 @@
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "date_consultation",
+      "data_type": "date",
+      "granularity": "month"
+    },
+    cluster_by=["id_organisation", "code_diagnostic", "id_prof_sante"]
+) }}
+
 WITH consultation_clean AS (
     SELECT
         CAST(Num_consultation AS INT64) AS id_fait_consult,
