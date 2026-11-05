@@ -1,3 +1,13 @@
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "date_entree",
+      "data_type": "date",
+      "granularity": "month"
+    },
+    cluster_by=["id_organisation", "code_diagnostic"]
+) }}
+
 SELECT
     CAST(Num_Hospitalisation AS INT64) AS id_fait_hospit,
     TO_HEX(SHA256(TRIM(CAST(Id_patient AS STRING)))) AS id_patient_source,

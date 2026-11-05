@@ -1,3 +1,13 @@
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "date_deces",
+      "data_type": "date",
+      "granularity": "year"
+    },
+    cluster_by=["code_departement", "sexe_decede"]
+) }}
+
 WITH deces_brut AS (
     SELECT
         CASE 
@@ -12,7 +22,6 @@ WITH deces_brut AS (
     FROM {{ source('chu_bronze', 'deces_insee') }}
     WHERE date_deces IS NOT NULL
 )
-
 SELECT
     FARM_FINGERPRINT(CONCAT(COALESCE(code_commune_insee, ''), '_', COALESCE(CAST(dt_deces AS STRING), ''), '_', COALESCE(numero_acte_deces, ''))) AS id_fait_deces,
     dt_deces AS date_deces,
