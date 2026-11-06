@@ -20,6 +20,6 @@ SELECT
     d.age_au_deces,
     d.nb_deces
 FROM {{ ref('stg_deces') }} d
-LEFT JOIN {{ ref('dim_localisation') }} l 
-    ON d.code_commune_insee = l.code_commune_insee 
-   AND d.code_departement = l.code_departement
+LEFT JOIN {{ ref('dim_localisation') }} l
+    ON COALESCE(d.code_commune_insee, 'INCONNU') = l.code_commune_insee
+   AND COALESCE(d.code_departement, 'INCONNU') = l.code_departement
