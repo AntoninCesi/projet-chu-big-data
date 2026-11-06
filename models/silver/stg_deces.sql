@@ -1,11 +1,5 @@
 {{ config(
-    materialized='table',
-    partition_by={
-      "field": "date_deces",
-      "data_type": "date",
-      "granularity": "year"
-    },
-    cluster_by=["code_departement", "sexe_decede"]
+    materialized='table'
 ) }}
 
 WITH deces_brut AS (
@@ -30,7 +24,7 @@ WITH deces_brut AS (
     FROM {{ source('chu_bronze', 'deces_insee') }}
 )
 SELECT
-    FARM_FINGERPRINT(CONCAT(COALESCE(code_commune_insee, ''), '_', COALESCE(CAST(dt_deces AS STRING), ''), '_', COALESCE(numero_acte_deces, ''))) AS id_fait_deces,
+    ROW_NUMBER() OVER (ORDER BY dt_deces, code_commune_insee) AS id_fait_deces,
     dt_deces AS date_deces,
     CAST(FORMAT_DATE('%Y%m%d', dt_deces) AS INT64) AS sk_date_deces,
     code_commune_insee,
@@ -45,4 +39,3 @@ SELECT
 FROM deces_brut
 WHERE dt_deces IS NOT NULL
   AND (dt_naissance IS NULL OR DATE_DIFF(dt_deces, dt_naissance, YEAR) BETWEEN 0 AND 125)
-QUALIFY ROW_NUMBER() OVER (PARTITION BY code_commune_insee, dt_deces, numero_acte_deces, sexe_decede ORDER BY dt_naissance) = 1

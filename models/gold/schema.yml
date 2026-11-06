@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: dim_temps
+    columns:
+      - name: sk_date
+        tests: [unique, not_null]
+
+  - name: dim_localisation
+    columns:
+      - name: sk_localisation
+        tests: [unique, not_null]
+
+  - name: dim_etablissement
+    columns:
+      - name: sk_etablissement
+        tests: [unique, not_null]
+
+  - name: dim_patient
+    columns:
+      - name: sk_patient
+        tests: [unique, not_null]
+
+  - name: dim_diagnostic
+    columns:
+      - name: sk_diagnostic
+        tests: [unique, not_null]
+
+  - name: dim_professionnel
+    columns:
+      - name: sk_professionnel
+        tests: [unique, not_null]
+
+  - name: fact_consultation
+    columns:
+      - name: id_fait_consult
+        tests: [unique, not_null]
+      - name: sk_patient
+        tests:
+          - relationships:
+              to: ref('dim_patient')
+              field: sk_patient
+      - name: sk_etablissement
+        tests:
+          - relationships:
+              to: ref('dim_etablissement')
+              field: sk_etablissement
+
+  - name: fact_hospitalisation
+    columns:
+      - name: id_fait_hospit
+        tests: [unique, not_null]
+      - name: sk_etablissement
+        tests:
+          - relationships:
+              to: ref('dim_etablissement')
+              field: sk_etablissement
+
+  - name: fact_satisfaction
+    columns:
+      - name: id_fait_satisfaction
+        tests: [unique, not_null]
+
+  - name: fact_deces
+    columns:
+      - name: id_fait_deces
+        tests: [unique, not_null]
