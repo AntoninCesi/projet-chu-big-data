@@ -9,7 +9,7 @@ sources:
       - name: professionnel_sante
       - name: activite_professionnel_sante
       - name: hospitalisations
-      - name: esatis_2017
+      - name: esatis_2020     
       - name: deces_insee
       - name: patient
       - name: consultation
