@@ -39,3 +39,7 @@ SELECT
 FROM deces_brut
 WHERE dt_deces IS NOT NULL
   AND (dt_naissance IS NULL OR DATE_DIFF(dt_deces, dt_naissance, YEAR) BETWEEN 0 AND 125)
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY dt_deces, code_commune_insee, numero_acte_deces, sexe_decede 
+    ORDER BY dt_naissance
+) = 1
