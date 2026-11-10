@@ -12,8 +12,8 @@ calcul_age AS (
         TRIM(CAST(Id_patient AS STRING)) AS id_patient_brut,
         TO_HEX(SHA256(TRIM(CAST(Id_patient AS STRING)))) AS id_patient_source,
         CASE 
-            WHEN UPPER(TRIM(CAST(Sexe AS STRING))) IN ('F', 'FEMME', '2') THEN 'F'
-            WHEN UPPER(TRIM(CAST(Sexe AS STRING))) IN ('M', 'H', 'HOMME', '1') THEN 'M'
+            WHEN UPPER(TRIM(CAST(Sexe AS STRING))) IN ('F', 'FEMME', 'FEMALE', '2') THEN 'F'
+            WHEN UPPER(TRIM(CAST(Sexe AS STRING))) IN ('M', 'H', 'HOMME', 'MALE', '1') THEN 'M'
             ELSE 'Inconnu'
         END AS sexe,
         COALESCE(
