@@ -11,6 +11,10 @@ SELECT
     CAST(NULL AS NUMERIC) AS taux_recommandation
 FROM {{ source('chu_bronze', 'esatis_2020') }}
 WHERE finess_geo IS NOT NULL
-  AND SAFE_CAST(nb_rep_score_all_rea_ajust AS INT64) >= 30
-  AND SAFE_CAST(REPLACE(CAST(score_all_rea_ajust AS STRING), ',', '.') AS NUMERIC) IS NOT NULL
-QUALIFY ROW_NUMBER() OVER (PARTITION BY finess_geo ORDER BY nb_rep_score_all_rea_ajust DESC) = 1
+  -- Règle HAS : score publié seulement à partir de 30 réponses exploitables
+  AND SAFE_CAST(TRIM(CAST(nb_rep_score_all_rea_ajust AS STRING)) AS INT64) >= 30
+  AND SAFE_CAST(REPLACE(TRIM(CAST(score_all_rea_ajust AS STRING)), ',', '.') AS NUMERIC) IS NOT NULL
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY finess_geo
+    ORDER BY SAFE_CAST(TRIM(CAST(nb_rep_score_all_rea_ajust AS STRING)) AS INT64) DESC
+) = 1

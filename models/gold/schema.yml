@@ -38,13 +38,37 @@ models:
       - name: sk_patient
         tests:
           - relationships:
-              to: ref('dim_patient')
-              field: sk_patient
+              arguments:
+                to: ref('dim_patient')
+                field: sk_patient
       - name: sk_etablissement
         tests:
           - relationships:
-              to: ref('dim_etablissement')
-              field: sk_etablissement
+              arguments:
+                to: ref('dim_etablissement')
+                field: sk_etablissement
+
+      - name: sk_date
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_temps')
+                field: sk_date
+      - name: sk_professionnel
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_professionnel')
+                field: sk_professionnel
+      - name: sk_diagnostic
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_diagnostic')
+                field: sk_diagnostic
 
   - name: fact_hospitalisation
     columns:
@@ -53,15 +77,63 @@ models:
       - name: sk_etablissement
         tests:
           - relationships:
-              to: ref('dim_etablissement')
-              field: sk_etablissement
+              arguments:
+                to: ref('dim_etablissement')
+                field: sk_etablissement
+
+      - name: sk_patient
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_patient')
+                field: sk_patient
+      - name: sk_diagnostic
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_diagnostic')
+                field: sk_diagnostic
+      - name: sk_date_entree
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_temps')
+                field: sk_date
 
   - name: fact_satisfaction
     columns:
       - name: id_fait_satisfaction
         tests: [unique, not_null]
 
+      - name: sk_etablissement
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_etablissement')
+                field: sk_etablissement
+      - name: sk_localisation
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_localisation')
+                field: sk_localisation
+
   - name: fact_deces
     columns:
       - name: id_fait_deces
         tests: [unique, not_null]
+      - name: sk_localisation
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_localisation')
+                field: sk_localisation
+      - name: sk_date_deces
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_temps')
+                field: sk_date
