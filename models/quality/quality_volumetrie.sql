@@ -6,7 +6,7 @@
     ('diagnostic + hospitalisations (codes distincts)', "select count(distinct upper(trim(code))) from (select Code_diag as code from " ~ source('chu_bronze', 'diagnostic') ~ " union all select Code_diagnostic as code from " ~ source('chu_bronze', 'hospitalisations') ~ ")", 'stg_diagnostic'),
     ('hospitalisations', "select count(*) from " ~ source('chu_bronze', 'hospitalisations'), 'stg_hospitalisation'),
     ('deces_insee', "select count(*) from " ~ source('chu_bronze', 'deces_insee'), 'stg_deces'),
-    ('esatis_2017', "select count(*) from " ~ source('chu_bronze', 'esatis_2017'), 'stg_satisfaction'),
+    ('esatis_2020', "select count(*) from " ~ source('chu_bronze', 'esatis_2020'), 'stg_satisfaction'),
     ('etablissement_sante', "select count(*) from " ~ source('chu_bronze', 'etablissement_sante'), 'stg_etablissement'),
     ('professionnel_de_sante + professionnel_sante', "select (select count(*) from " ~ source('chu_bronze', 'professionnel_de_sante') ~ ") + (select count(*) from " ~ source('chu_bronze', 'professionnel_sante') ~ ")", 'stg_professionnel')
 ] %}
